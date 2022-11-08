@@ -1,6 +1,6 @@
 '''
 
-Author : Touimer Amin
+Author : MINOU
 Date: November 2022
 Jeu: Escape Game
 
