@@ -26,14 +26,12 @@ position = (0, 1)
 
 
 def lire_matrice(fichier):
-
     """
     Renvoie le plan du château sous forme d'une liste de liste
     en recevant comme paramètre le fichier à lire
 
     :param fichier:
     :return:
-
     """
     with open(fichier, encoding="utf-8") as f:
         castle = []
@@ -45,43 +43,33 @@ def lire_matrice(fichier):
         return castle
 
 
-plan = lire_matrice(fichier_plan)
-
-
 def creer_dictionnaire_des_objets(fichier_des_objets):
     with open(fichier_des_objets,encoding='utf-8') as objet:
-        res = ''
-        d= {}
+        res,d = '', {}
         for i in objet:
             res += i
             a, b = eval(res)
-            d[a] = b
-            res = ''
+            d[a], res = b,''
         return d
 
 
-dico_objet = creer_dictionnaire_des_objets(fichier_objets)
-dico_question_reponse = creer_dictionnaire_des_objets(fichier_questions)
+dico_objet,dico_question_reponse ,plan = creer_dictionnaire_des_objets(fichier_objets),creer_dictionnaire_des_objets(fichier_questions),lire_matrice(fichier_plan)
 
 
 def calculer_pas(plan):
-
     """
     Calcule la longeur d'un côté d'une case
 
     :param plan:
     :return:
-
     """
-    case_hauteur = DISTANCE_HAUTEUR / len(plan)
-    case_largeur = DISTANCE_LARGEUR / len(plan[0])
+    case_hauteur,case_largeur = DISTANCE_HAUTEUR / len(plan),DISTANCE_LARGEUR / len(plan[0])
     if case_hauteur > case_largeur or case_hauteur == case_largeur: res = case_largeur
     else: res = case_hauteur
     return res
 
 
 def coordonnees(case, deplacement):  #case = coordonnées de y x dans la matrice
-
     """
     Renvoie les coordonnées en pixels Turtle d'une case grâce aux
     coordonnées d'un point du plan
@@ -89,24 +77,18 @@ def coordonnees(case, deplacement):  #case = coordonnées de y x dans la matrice
     :param case:
     :param deplacement:
     :return:
-
     """
-
-    x = ZONE_PLAN_MINI[0] + (deplacement * case[1]) #Transformation en pixel turtle
-    y = (ZONE_PLAN_MAXI[1]-deplacement) - (deplacement * case[0]) #Transformation en pixel turtle
+    x,y = ZONE_PLAN_MINI[0] + (deplacement * case[1]),(ZONE_PLAN_MAXI[1]-deplacement) - (deplacement * case[0]) #Transformation en pixel turtle
     return (x,y)
 
 
 def tracer_carre(deplacement):
-
     """
     Traçage d'un carré en fonction de la longueur du déplacement
 
     :param deplacement:
     :return:
-
     """
-
     turtle.pencolor(COULEUR_COULOIR)
     for k in range(4):
         turtle.forward(deplacement)
@@ -114,7 +96,6 @@ def tracer_carre(deplacement):
 
 
 def tracer_case(case, couleur,deplacement):
-
     """
     Tracer une case d'une certaine coordonnée et d'une certaine couleur
     à un certain endroit. Le deplacement ici, représente la distance entre deux cases.
@@ -123,7 +104,6 @@ def tracer_case(case, couleur,deplacement):
     :param couleur:
     :param deplacement:
     :return:
-
     """
     turtle.up()
     turtle.goto(case)
@@ -136,15 +116,12 @@ def tracer_case(case, couleur,deplacement):
 
 
 def afficher_plan(plan):
-
     """
     Affichage du plan
 
     :param plan:
     :return:
-
     """
-
     for i in range(len(plan)): #Coordonnée de y du plan
         for j in range(len(plan[0])): #Coordonnée de x du plan
 
