@@ -22,8 +22,6 @@ import time
 DISTANCE_LARGEUR = ZONE_PLAN_MAXI[0] - ZONE_PLAN_MINI[0]
 DISTANCE_HAUTEUR = ZONE_PLAN_MAXI[1] - ZONE_PLAN_MINI[1]
 position = (0, 1)
-POINT_AFFICHAGE_INVENTAIRE = (70, 210)
-LISTE_POS = [(70, 200),(70, 190) ,(70, 180) ,(70, 170) ,(70, 160) ,(70, 150)]
 
 ################################ FONCTION ##############################################
 
