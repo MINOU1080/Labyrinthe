@@ -21,7 +21,9 @@ import time
 
 DISTANCE_LARGEUR = ZONE_PLAN_MAXI[0] - ZONE_PLAN_MINI[0]
 DISTANCE_HAUTEUR = ZONE_PLAN_MAXI[1] - ZONE_PLAN_MINI[1]
+INVENTAIRE = (70,180)
 position = (0, 1)
+
 
 ################################ FONCTION ##############################################
 
@@ -52,7 +54,6 @@ def creer_dictionnaire_des_objets(fichier_des_objets):
 
 
 dico_objet,dico_question_reponse ,plan = creer_dictionnaire_des_objets(fichier_objets),creer_dictionnaire_des_objets(fichier_questions),lire_matrice(fichier_plan)
-
 
 def calculer_pas(plan):
 
@@ -174,10 +175,12 @@ def dessin(m):
 
 
 def ramasser_objet():
+    global INVENTAIRE
     if position in dico_objet:
         afficher_inventaire(dico_objet[position])
         afficher_annonce("Vous avez trouvé : " + dico_objet[position])
     suppression_objet()
+    INVENTAIRE = (INVENTAIRE[0],INVENTAIRE[1] - 30)
 
 
 def afficher_annonce(annonce):
@@ -185,7 +188,7 @@ def afficher_annonce(annonce):
     turtle.goto(POINT_AFFICHAGE_ANNONCES)
     turtle.down()
     turtle.write(annonce, font=("Verdana", 8, "bold"))
-    time.sleep(0.5)
+    time.sleep(1.0)
     effacer()
 
 
@@ -203,12 +206,11 @@ def effacer():
 
 
 def afficher_inventaire(objet):
-
     turtle.up()
-    turtle.goto(POINT_AFFICHAGE_INVENTAIRE)
+    turtle.goto(INVENTAIRE)
     turtle.down()
     turtle.pencolor("black")
-    turtle.write(" ▏" + objet, font=("Verdana", 10, "bold"))
+    turtle.write(" ▏" + objet, font=("Verdana", 8, "bold"))
 
 
 def poser_question(matrice, case, mouvement):
@@ -247,19 +249,17 @@ def event():
     turtle.mainloop()
 
 
-
-
 def jeu():
-
     afficher_plan(plan)
     dessin(calculer_pas(plan))
+    turtle.up()
+    turtle.goto(POINT_AFFICHAGE_INVENTAIRE)
+    turtle.down()
+    turtle.pencolor("black")
+    turtle.write("Inventaire : ", font=("Verdana", 10, "bold"))
     event()
 
 #################################### JEU ####################################################
 
 
 jeu()
-
-"""
-TO DO: tous les objets inv s'affichent au même endroit
-"""
