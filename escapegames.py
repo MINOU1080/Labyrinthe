@@ -15,12 +15,15 @@ Une fois tous les objets récupérer et toutes les portes déverouillées, la vi
 
 import turtle
 from CONFIGS import *
+import time
 
 ################################ CONFIGURATION #########################################
 
 DISTANCE_LARGEUR = ZONE_PLAN_MAXI[0] - ZONE_PLAN_MINI[0]
 DISTANCE_HAUTEUR = ZONE_PLAN_MAXI[1] - ZONE_PLAN_MINI[1]
 position = (0, 1)
+POINT_AFFICHAGE_INVENTAIRE = (70, 210)
+LISTE_POS = [(70, 200),(70, 190) ,(70, 180) ,(70, 170) ,(70, 160) ,(70, 150)]
 
 ################################ FONCTION ##############################################
 
@@ -64,8 +67,7 @@ def calculer_pas(plan):
     :return:
     """
     case_hauteur,case_largeur = DISTANCE_HAUTEUR / len(plan),DISTANCE_LARGEUR / len(plan[0])
-    if case_hauteur > case_largeur or case_hauteur == case_largeur: res = case_largeur
-    else: res = case_hauteur
+    res = min(case_hauteur,case_largeur)
     return res
 
 
@@ -185,37 +187,61 @@ def dessin(m):
 
 def ramasser_objet():
     afficher_inventaire(dico_objet[position])
-    afficher_annonce("Vous avez trouvé : "+ dico_objet[position])
+    afficher_annonce("Vous avez trouvé : " + dico_objet[position])
 
 
 def afficher_annonce(annonce):
     turtle.up()
     turtle.goto(POINT_AFFICHAGE_ANNONCES)
     turtle.down()
-    turtle.write(annonce,font=("Verdana",8, "bold"))
+    turtle.write(annonce, font=("Verdana", 8, "bold"))
+    time.sleep(0.5)
+    effacer()
+
+
+def effacer():
+    turtle.up()
+    turtle.goto(POINT_AFFICHAGE_ANNONCES)
+    turtle.down()
+    turtle.pencolor("white")
+    turtle.fillcolor("white")
+    turtle.begin_fill()
+    turtle.speed(1)
+    for i in range(4):
+        turtle.forward(500)
+        turtle.left(90)
+    turtle.end_fill()
 
 
 def afficher_inventaire(objet):
+
     turtle.up()
     turtle.goto(POINT_AFFICHAGE_INVENTAIRE)
     turtle.down()
     turtle.pencolor("black")
-    turtle.write(" ▏"+ objet,font=("Verdana",10, "bold"))
+    turtle.write(" ▏" + objet, font=("Verdana", 10, "bold"))
 
 
 def poser_question(matrice, case, mouvement):
 
-    joueur = turtle.textinput("Question",dico_question_reponse[case][0])
-    if joueur == dico_question_reponse[case][1]:
-        turtle.listen()
-        turtle.pencolor("black")
-        afficher_annonce("Bonne réponse ! La porte s'ouvre.")
-        dessin(calculer_pas(matrice))
-    else:
-        turtle.listen()
-        turtle.pencolor("black")
-        afficher_annonce("Mauvaise réponse ! La porte est fermé :/")
-        poser_question(plan,position,mouvement)
+    if position in dico_question_reponse:
+        joueur = turtle.textinput("Question", dico_question_reponse[case][0])
+        if joueur == dico_question_reponse[case][1]:
+            turtle.listen()
+            turtle.pencolor("black")
+            afficher_annonce("Bonne réponse ! La porte s'ouvre.")
+            dessin(calculer_pas(matrice))
+        else:
+            turtle.listen()
+            turtle.pencolor("black")
+            afficher_annonce("Mauvaise réponse ! La porte est fermé :/")
+            poser_question(plan, position, mouvement)
+    suppression_porte()
+
+
+def suppression_porte():
+    try: del dico_question_reponse[position]
+    except: print(end='')
 
 
 def event():
@@ -228,20 +254,16 @@ def event():
 
 
 def jeu():
+
     afficher_plan(plan)
     dessin(calculer_pas(plan))
     event()
 
 #################################### JEU ####################################################
 
+
 jeu()
 
-
 """
-A faire
-
-- Effacer la derniere annonce à chaque fois
-- Tous les objets de l'inventaire s'affiche au même endroit
-- Quand une porte est ouverte si on repasse sur la même case on doit encore répondre à la question
-
+TO DO: tous les objets inv s'affichent au même endroit
 """
