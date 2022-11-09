@@ -174,8 +174,10 @@ def dessin(m):
 
 
 def ramasser_objet():
-    afficher_inventaire(dico_objet[position])
-    afficher_annonce("Vous avez trouvé : " + dico_objet[position])
+    if position in dico_objet:
+        afficher_inventaire(dico_objet[position])
+        afficher_annonce("Vous avez trouvé : " + dico_objet[position])
+    suppression_objet()
 
 
 def afficher_annonce(annonce):
@@ -194,7 +196,6 @@ def effacer():
     turtle.pencolor("white")
     turtle.fillcolor("white")
     turtle.begin_fill()
-    turtle.speed(1)
     for i in range(4):
         turtle.forward(500)
         turtle.left(90)
@@ -229,6 +230,11 @@ def poser_question(matrice, case, mouvement):
 
 def suppression_porte():
     try: del dico_question_reponse[position]
+    except: print(end='')
+
+
+def suppression_objet():
+    try: del dico_objet[position]
     except: print(end='')
 
 
