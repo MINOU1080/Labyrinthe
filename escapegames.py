@@ -27,13 +27,10 @@ position = (0, 1)
 
 
 def lire_matrice(fichier):
-    """
-    Renvoie le plan du château sous forme d'une liste de liste
-    en recevant comme paramètre le fichier à lire
 
-    :param fichier:
-    :return:
-    """
+    """ Renvoie le plan du château sous forme d'une liste de liste
+    en recevant comme paramètre le fichier à lire."""
+
     with open(fichier, encoding="utf-8") as f:
         castle = []
         for line in f.readlines():
@@ -58,37 +55,27 @@ dico_objet,dico_question_reponse ,plan = creer_dictionnaire_des_objets(fichier_o
 
 
 def calculer_pas(plan):
-    """
-    Calcule la longeur d'un côté d'une case
 
-    :param plan:
-    :return:
-    """
+    """ Calcule la longeur d'un côté d'une case. """
+
     case_hauteur,case_largeur = DISTANCE_HAUTEUR / len(plan),DISTANCE_LARGEUR / len(plan[0])
     res = min(case_hauteur,case_largeur)
     return res
 
 
 def coordonnees(case, deplacement):  #case = coordonnées de y x dans la matrice
-    """
-    Renvoie les coordonnées en pixels Turtle d'une case grâce aux
-    coordonnées d'un point du plan
 
-    :param case:
-    :param deplacement:
-    :return:
-    """
+    """ Renvoie les coordonnées en pixels Turtle d'une case grâce aux
+    coordonnées d'un point du plan. """
+
     x,y = ZONE_PLAN_MINI[0] + (deplacement * case[1]),(ZONE_PLAN_MAXI[1]-deplacement) - (deplacement * case[0]) #Transformation en pixel turtle
     return (x,y)
 
 
 def tracer_carre(deplacement):
-    """
-    Traçage d'un carré en fonction de la longueur du déplacement
 
-    :param deplacement:
-    :return:
-    """
+    """ Traçage d'un carré en fonction de la longueur du déplacement. """
+
     turtle.pencolor(COULEUR_COULOIR)
     for k in range(4):
         turtle.forward(deplacement)
@@ -96,15 +83,10 @@ def tracer_carre(deplacement):
 
 
 def tracer_case(case, couleur,deplacement):
-    """
-    Tracer une case d'une certaine coordonnée et d'une certaine couleur
-    à un certain endroit. Le deplacement ici, représente la distance entre deux cases.
 
-    :param case:
-    :param couleur:
-    :param deplacement:
-    :return:
-    """
+    """  Tracer une case d'une certaine coordonnée et d'une certaine couleur
+    à un certain endroit. Le deplacement ici, représente la distance entre deux cases.  """
+
     turtle.up()
     turtle.goto(case)
     turtle.down()
@@ -116,12 +98,9 @@ def tracer_case(case, couleur,deplacement):
 
 
 def afficher_plan(plan):
-    """
-    Affichage du plan
 
-    :param plan:
-    :return:
-    """
+    """ Affichage du plan avec coloriage des cases."""
+
     for i in range(len(plan)): #Coordonnée de y du plan
         for j in range(len(plan[0])): #Coordonnée de x du plan
 
@@ -143,11 +122,22 @@ def deplacer(m,p,mouvement):
 
     """Conditions pour pouvoir se déplacer sur le plan"""
 
-    if plan[position[0]][position[1]] == 0: dessin(m)
-    elif plan[position[0]][position[1]] == 3:  poser_question(plan,position,mouvement)
-    elif plan[position[0]][position[1]] == 4: dessin(m); ramasser_objet()
-    elif plan[position[0]][position[1]] == 2:dessin(m);turtle.pencolor("black");afficher_annonce("Felicitations !")
-    else:position = (p[0],p[1]) ; dessin(m)
+    if plan[position[0]][position[1]] == 0:
+        dessin(m)
+    elif plan[position[0]][position[1]] == 3:
+        poser_question(plan,position,mouvement)
+    elif plan[position[0]][position[1]] == 4:
+        dessin(m)
+        ramasser_objet()
+    elif plan[position[0]][position[1]] == 2:
+        dessin(m);turtle.pencolor("black")
+        afficher_annonce("Felicitations ! Vous avez terminé le jeu !")
+        position = (p[0], p[1])
+        time.sleep(1.0)
+        turtle.textinput("Félicitations !","Veuillez attribuer une note sur 10")
+    else:
+        position = (p[0],p[1])
+        dessin(m)
 
 
 def deplacer_gauche(): # X -1
@@ -249,6 +239,8 @@ def event():
     turtle.onkeypress(deplacer_haut, "Up")
     turtle.onkeypress(deplacer_bas, "Down")
     turtle.mainloop()
+
+
 
 
 def jeu():
