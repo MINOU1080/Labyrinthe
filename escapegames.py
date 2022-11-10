@@ -1,6 +1,6 @@
 '''
 
-Author : MINOU
+Author : Touimer Amin
 Date: November 2022
 Jeu: Escape Game
 
@@ -24,7 +24,6 @@ DISTANCE_HAUTEUR = ZONE_PLAN_MAXI[1] - ZONE_PLAN_MINI[1]
 INVENTAIRE = (70,180)
 position = (0, 1)
 
-
 ################################ FONCTION ##############################################
 
 
@@ -44,6 +43,10 @@ def lire_matrice(fichier):
 
 
 def creer_dictionnaire_des_objets(fichier_des_objets):
+
+    """Renvoie un dictionnaire des objets ou des portes en fonction
+    du fichier de lecture. """
+
     with open(fichier_des_objets,encoding='utf-8') as objet:
         res,d = '', {}
         for i in objet:
@@ -53,7 +56,8 @@ def creer_dictionnaire_des_objets(fichier_des_objets):
         return d
 
 
-dico_objet,dico_question_reponse ,plan = creer_dictionnaire_des_objets(fichier_objets),creer_dictionnaire_des_objets(fichier_questions),lire_matrice(fichier_plan)
+dico_objet,dico_question_reponse,plan = creer_dictionnaire_des_objets(fichier_objets),creer_dictionnaire_des_objets(fichier_questions),lire_matrice(fichier_plan)
+
 
 def calculer_pas(plan):
 
@@ -117,6 +121,11 @@ def afficher_plan(plan):
 
 
 def deplacer(m,p,mouvement):
+
+    """Permet au joueur de se déplacer sur le plan (m)
+    en fonction de son mouvement (fonctions des déplacements du joueurs),
+    la position sera mise à jour à chaque mouvement du joueur."""
+
     global matrice,position
     position = (p[0] + mouvement[0],p[1] + mouvement[1])
     tracer_case(coordonnees((position[0] - mouvement[0], position[1] - mouvement[1]), m), COULEUR_VUE,m)
@@ -142,30 +151,45 @@ def deplacer(m,p,mouvement):
 
 
 def deplacer_gauche(): # X -1
+
+    """Permet au joueur de se déplacer vers la gauche."""
+
     mouvement = (0,-1)
     deplacer(calculer_pas(plan),position,mouvement)
     turtle.onkeypress(deplacer_gauche, "Left")
 
 
 def deplacer_droite(): # X +1
+
+    """Permet au joueur de se déplacer vers la droite."""
+
     mouvement = (0,1)
     deplacer(calculer_pas(plan),position,mouvement)
     turtle.onkeypress(deplacer_droite, "Right")
 
 
 def deplacer_haut(): # y-1
+
+    """Permet au joueur de se déplacer vers le haut."""
+
     mouvement = (-1,0)
     deplacer(calculer_pas(plan),position,mouvement)
     turtle.onkeypress(deplacer_haut, "Up")
 
 
 def deplacer_bas(): # y +1
+
+    """Permet au joueur de se déplacer vers le bas."""
+
     mouvement = (1,0)
     deplacer(calculer_pas(plan),position,mouvement)
     turtle.onkeypress(deplacer_bas, "Down")
 
 
 def dessin(m):
+
+    """Dessine le personnage à l'emplacement adéquat."""
+
     turtle.up()
     turtle.goto(coordonnees(position, m))
     coord_pixel_turtle = coordonnees(position, m)
@@ -175,6 +199,9 @@ def dessin(m):
 
 
 def ramasser_objet():
+
+    """Permet de rammasser un objet qui se trouve sur une certaine case."""
+
     global INVENTAIRE
     if position in dico_objet:
         afficher_inventaire(dico_objet[position])
@@ -184,6 +211,9 @@ def ramasser_objet():
 
 
 def afficher_annonce(annonce):
+
+    """Permet d'afficher l'annonce dans le bandeau d'annonce"""
+
     turtle.up()
     turtle.goto(POINT_AFFICHAGE_ANNONCES)
     turtle.down()
@@ -193,6 +223,9 @@ def afficher_annonce(annonce):
 
 
 def effacer():
+
+    """Permet d'effacer la dernière annonce présente dans le bandeau d'annonce."""
+
     turtle.up()
     turtle.goto(POINT_AFFICHAGE_ANNONCES)
     turtle.down()
@@ -206,6 +239,9 @@ def effacer():
 
 
 def afficher_inventaire(objet):
+
+    """Permet d'ajouter l'objet ramasser dans l'inventaire."""
+
     turtle.up()
     turtle.goto(INVENTAIRE)
     turtle.down()
@@ -214,6 +250,9 @@ def afficher_inventaire(objet):
 
 
 def poser_question(matrice, case, mouvement):
+
+    """Permet de poser une question au joueur quand il passe sur
+    case qui contient une question."""
 
     if position in dico_question_reponse:
         joueur = turtle.textinput("Question", dico_question_reponse[case][0])
@@ -231,11 +270,17 @@ def poser_question(matrice, case, mouvement):
 
 
 def suppression_porte():
+
+    """Permet de supprimer une porte dans le dictionnaire des portes."""
+
     try: del dico_question_reponse[position]
     except: print(end='')
 
 
 def suppression_objet():
+
+    """Permet de supprimer un objet dans le dictionnaire des objets."""
+
     try: del dico_objet[position]
     except: print(end='')
 
@@ -250,6 +295,10 @@ def event():
 
 
 def jeu():
+
+    """Fonction principale du jeu, fait appel à toutes les fonctions afin
+    de lancer le jeu."""
+
     afficher_plan(plan)
     dessin(calculer_pas(plan))
     turtle.up()
