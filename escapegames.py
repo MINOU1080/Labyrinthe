@@ -15,15 +15,23 @@ Une fois tous les objets récupérer et toutes les portes déverouillées, la vi
 
 import turtle
 from CONFIGS import *
-import time
 
 ################################ CONFIGURATION #########################################
 
 DISTANCE_LARGEUR = ZONE_PLAN_MAXI[0] - ZONE_PLAN_MINI[0]
 DISTANCE_HAUTEUR = ZONE_PLAN_MAXI[1] - ZONE_PLAN_MINI[1]
 INVENTAIRE = (70,180)
+TORTUE_GOMME = turtle.Turtle()
 position = (0, 1)
-
+REGLEMENT =  "★★★Lancelot entre dans le château au sommet du Python des Neiges,\n" \
+             "muni de son précieux sac de rangement et de sa\n" \
+             "torche fraîchement allumée aux feux de Beltane. Il doit trouver son chemin.★★★\n" \
+             " \n"\
+             "○Tâche 1: Ramasse tous les objets !\n" \
+             " \n"\
+             "○Tâche 2 : Résous les enigmes grâce aux objets ramasser.\n" \
+             " \n"\
+             "○Tâche 3: Ne pas se faire manger par le Monstre du château !"
 ################################ FONCTION ##############################################
 
 
@@ -54,9 +62,6 @@ def creer_dictionnaire_des_objets(fichier_des_objets):
             a, b = eval(res)
             d[a], res = b,''
         return d
-
-
-dico_objet,dico_question_reponse,plan = creer_dictionnaire_des_objets(fichier_objets),creer_dictionnaire_des_objets(fichier_questions),lire_matrice(fichier_plan)
 
 
 def calculer_pas(plan):
@@ -108,9 +113,7 @@ def afficher_plan(plan):
 
     for i in range(len(plan)): #Coordonnée de y du plan
         for j in range(len(plan[0])): #Coordonnée de x du plan
-
             """Condtions de remplissage d'une case"""
-
             if plan[i][j] == 0: couleur_remplissage= COULEURS[0]
             elif plan[i][j] == 1: couleur_remplissage = COULEURS[1]
             elif plan[i][j] == 2: couleur_remplissage = COULEURS[2]
@@ -123,15 +126,13 @@ def afficher_plan(plan):
 def deplacer(m,p,mouvement):
 
     """Permet au joueur de se déplacer sur le plan (m)
-    en fonction de son mouvement (fonctions des déplacements du joueurs),
+    en fonction de son mouvement (fonctions des déplacements du joueurs, gauche,droite,ect...),
     la position sera mise à jour à chaque mouvement du joueur."""
 
     global matrice,position
     position = (p[0] + mouvement[0],p[1] + mouvement[1])
     tracer_case(coordonnees((position[0] - mouvement[0], position[1] - mouvement[1]), m), COULEUR_VUE,m)
-
     """Conditions pour pouvoir se déplacer sur le plan"""
-
     if plan[position[0]][position[1]] == 0:
         dessin(m)
     elif plan[position[0]][position[1]] == 3:
@@ -140,11 +141,9 @@ def deplacer(m,p,mouvement):
         dessin(m)
         ramasser_objet()
     elif plan[position[0]][position[1]] == 2:
-        dessin(m);turtle.pencolor("black")
-        afficher_annonce("Felicitations ! Vous avez terminé le jeu !")
+        dessin(m)
         position = (p[0], p[1])
-        time.sleep(1.0)
-        turtle.textinput("Félicitations !","Veuillez attribuer une note sur 10")
+        fin_jeu()
     else:
         position = (p[0],p[1])
         dessin(m)
@@ -214,28 +213,11 @@ def afficher_annonce(annonce):
 
     """Permet d'afficher l'annonce dans le bandeau d'annonce"""
 
-    turtle.up()
-    turtle.goto(POINT_AFFICHAGE_ANNONCES)
-    turtle.down()
-    turtle.write(annonce, font=("Verdana", 8, "bold"))
-    time.sleep(1.0)
-    effacer()
-
-
-def effacer():
-
-    """Permet d'effacer la dernière annonce présente dans le bandeau d'annonce."""
-
-    turtle.up()
-    turtle.goto(POINT_AFFICHAGE_ANNONCES)
-    turtle.down()
-    turtle.pencolor("white")
-    turtle.fillcolor("white")
-    turtle.begin_fill()
-    for i in range(4):
-        turtle.forward(500)
-        turtle.left(90)
-    turtle.end_fill()
+    TORTUE_GOMME.clear()
+    TORTUE_GOMME.up()
+    TORTUE_GOMME.goto(POINT_AFFICHAGE_ANNONCES)
+    TORTUE_GOMME.down()
+    TORTUE_GOMME.write(annonce, font=("Verdana", 8, "bold"))
 
 
 def afficher_inventaire(objet):
@@ -255,8 +237,8 @@ def poser_question(matrice, case, mouvement):
     case qui contient une question."""
 
     if position in dico_question_reponse:
-        joueur = turtle.textinput("Question", dico_question_reponse[case][0])
-        if joueur == dico_question_reponse[case][1]:
+        reponse = turtle.textinput("Question", dico_question_reponse[case][0])
+        if reponse == dico_question_reponse[case][1]:
             turtle.listen()
             turtle.pencolor("black")
             afficher_annonce("Bonne réponse ! La porte s'ouvre.")
@@ -308,7 +290,43 @@ def jeu():
     turtle.write("Inventaire : ", font=("Verdana", 10, "bold"))
     event()
 
+
+def fin_jeu():
+
+    """Permet de mettre fin au déroulement du jeu en donnant la victoire au joueur"""
+    turtle.hideturtle()
+    turtle.pencolor("black")
+    afficher_annonce("Felicitations ! Vous avez terminé le jeu !")
+    pseudo = turtle.textinput("Félicitations !", "Veuillez entrer votre pseudo")
+    afficher_annonce(" ")
+    turtle.clear()
+    turtle.up()
+    turtle.goto(-150,0)
+    turtle.down()
+    turtle.pencolor("red")
+    turtle.write("Victoire de "+ pseudo, font=("Verdana", 20, "bold"))
+
+
+def objectif():
+
+    """Permet d'afficher les objectifs à réaliser au joueur."""
+
+    turtle.hideturtle()
+    turtle.up()
+    turtle.goto(-240,75)
+    turtle.down()
+    turtle.pencolor("black")
+    turtle.write(REGLEMENT, font=("Verdana", 8, "bold"))
+    lancement_jeu = turtle.textinput("Objectif.", "Après avoir lu les objectifs veuillez,taper ok.")
+
+    if lancement_jeu == "ok": turtle.clear()
+    else: objectif()
+
+
 #################################### JEU ####################################################
 
 
+dico_objet,dico_question_reponse,plan = creer_dictionnaire_des_objets(fichier_objets),creer_dictionnaire_des_objets(fichier_questions),lire_matrice(fichier_plan)
+
+objectif()
 jeu()
